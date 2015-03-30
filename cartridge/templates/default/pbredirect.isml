@@ -1,0 +1,2 @@
+<!--- TEMPLATENAME: pbredirect.isml --->
+<isredirect location="${pdict.Location}">

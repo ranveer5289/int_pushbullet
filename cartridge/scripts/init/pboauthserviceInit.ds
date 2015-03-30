@@ -1,0 +1,44 @@
+importPackage(dw.svc);
+importPackage(dw.net);
+importPackage(dw.io);
+
+ServiceRegistry.configure("service.http.pushbullet.oauth", {
+	createRequest : function (svc : HTTPService, args) {
+		// Default request method is post
+		// No need to setRequestMethod
+		if (args) {
+
+			svc.addHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+			var requestData = Object.keys(args)
+				.map(function (key) {
+					return key + "=" + encodeURIComponent(args[key]);
+				})
+				.join('&');
+			return requestData;
+		} else {
+			return null;
+		}
+	},
+	parseResponse : function (svc : HTTPService, client : HTTPClient) {
+		return client.text;
+	}
+});
+
+ServiceRegistry.configure("service.http.pushbullet", {
+	createRequest : function (svc : HTTPService, args) {
+		// Default request method is post
+		// No need to setRequestMethod
+		svc.setRequestMethod("GET");
+		if (args) {
+
+			var headerValue : String = "Bearer ".concat(args['accessToken']);
+			svc.addHeader('Authorization',headerValue);
+			//return args;
+		} else {
+			return null;
+		}
+	},
+	parseResponse : function (svc : HTTPService, client : HTTPClient) {
+		return client.text;
+	}
+});
