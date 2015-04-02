@@ -19,7 +19,8 @@
 importPackage(dw.system);
 importPackage(dw.svc);
 importPackage(dw.net);
-importPackage(dw.io)
+importPackage(dw.io);
+importPackage(dw.util);
 
 function execute( args : PipelineDictionary ) : Number
 {
@@ -27,17 +28,23 @@ function execute( args : PipelineDictionary ) : Number
    	var service : Service;
 	var result : Result;
 	var pbaccessToken : String = args.accessToken;
+
 	var paramObject : Object = {
 		"accessToken" : pbaccessToken
 	}
 	service = ServiceRegistry.get("service.http.pushbullet");
 
 	var endpointUrl : String = service.getURL();
-	endpointUrl = endpointUrl + "devices";
+	endpointUrl = endpointUrl.concat("devices");
 	service.setURL(endpointUrl);
 	result = service.call(paramObject);
 	
-	var jsonString = result.object;
+	var jsonString : String = "";
+	if(result.ok){
+		jsonString = result.object;
+	}else{
+		jsonString = result.errorMessage;
+	}
 	var parsedJson : Object = JSON.parse(jsonString);
 	args.jsonResponse = parsedJson;	
 	

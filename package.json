@@ -1,3 +1,3 @@
 {
-    "init": ["./cartridge/scripts/init/pboauthserviceInit.ds"]
+    "init": ["./cartridge/scripts/init/pbserviceInit.ds"]
 }

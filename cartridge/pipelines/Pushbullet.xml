@@ -60,7 +60,7 @@
         </transition-display>
       </simple-transition>
       <node>
-        <jump-node start-name-ref="Pushbullet-GetUserDevices"/>
+        <jump-node start-name-ref="Account-Show"/>
         <node-display x="2" y="1"/>
       </node>
     </segment>
@@ -171,7 +171,7 @@
         </transition-display>
       </simple-transition>
       <node>
-        <jump-node start-name-ref="Pushbullet-GetUserDevices"/>
+        <jump-node start-name-ref="Account-Show"/>
         <node-display x="0" y="1"/>
       </node>
     </segment>
@@ -249,9 +249,53 @@
         <join-node/>
         <node-display x="0" y="1"/>
       </node>
+      <simple-transition>
+        <transition-display>
+          <bend-point relative-to="source" x="0" y="1"/>
+        </transition-display>
+      </simple-transition>
+      <node>
+        <interaction-node transaction-required="false">
+          <template buffered="true" dynamic="false" name="pushbullet/pushbulletjson"/>
+        </interaction-node>
+        <node-display x="0" y="1"/>
+      </node>
+    </segment>
+  </branch>
+  <branch basename="SendNotification">
+    <segment>
+      <node>
+        <start-node name="SendNotification" secure="false"/>
+        <node-display x="5" y="6"/>
+      </node>
       <simple-transition/>
       <node>
-        <jump-node start-name-ref="Account-Show"/>
+        <pipelet-node pipelet-name="Script" pipelet-set-identifier="bc_api">
+          <config-property key="Transactional" value="false"/>
+          <config-property key="OnError" value="PIPELET_ERROR"/>
+          <config-property key="ScriptFile" value="pbsendnotification.ds"/>
+          <key-binding alias="log" key="ScriptLog"/>
+          <key-binding alias="CurrentHttpParameterMap" key="CurrentHttpParameterMap"/>
+          <key-binding alias="CurrentCustomer.profile.custom.pbAccessToken" key="accessToken"/>
+          <key-binding alias="jsonResponse" key="jsonResponse"/>
+        </pipelet-node>
+        <node-display x="0" y="1"/>
+        <branch basename="b2" source-connector="error">
+          <transition target-connector="in2" target-path="./+1"/>
+        </branch>
+      </node>
+      <transition target-connector="in1" target-path="./+1"/>
+    </segment>
+    <segment>
+      <node>
+        <join-node/>
+        <node-display x="0" y="1"/>
+      </node>
+      <simple-transition/>
+      <node>
+        <interaction-node transaction-required="false">
+          <template buffered="true" dynamic="false" name="pushbullet/pushbulletjson"/>
+        </interaction-node>
         <node-display x="0" y="1"/>
       </node>
     </segment>
