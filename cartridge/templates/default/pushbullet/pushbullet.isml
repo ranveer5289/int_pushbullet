@@ -2,7 +2,7 @@
 
 <a class="send-to-device" title="send to a device" href="#">Send to a Device </a>
 <div class="pushbulletDeviceList">
-	Link to Send <input id="pushbulletLink" type="text"> 
+	<input id="pushbulletLink" type="text" placeholder="Link to Send" > <br>
 	<input id="pushbulletSubmit" type="button" value="Send it" />
 	<div class="status"></div>
 </div>

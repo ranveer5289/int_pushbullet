@@ -34,18 +34,9 @@ function execute( args : PipelineDictionary ) : Number
 	}
 	service = ServiceRegistry.get("service.http.pushbullet");
 
-	var endpointUrl : String = service.getURL();
-	endpointUrl = endpointUrl.concat("devices");
-	service.setURL(endpointUrl);
-	result = service.call(paramObject);
-	
-	var jsonString : String = "";
-	if(result.ok){
-		jsonString = result.object;
-	}else{
-		jsonString = result.errorMessage;
-	}
-	var parsedJson : Object = JSON.parse(jsonString);
+	var libpushbullet = require("./libpushbullet.ds");
+	result = libpushbullet.makeServiceCall(service, paramObject, "devices");
+	var parsedJson : Object = libpushbullet.handleJsonResponse(result);
 	args.jsonResponse = parsedJson;	
 	
    return PIPELET_NEXT;

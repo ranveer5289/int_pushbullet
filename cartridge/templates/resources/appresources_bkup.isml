@@ -1,0 +1,12 @@
+<iscontent type="text/javascript" charset="UTF-8" compact="true"/>
+
+<isscript>
+	// application urls
+	var urls =  {
+		pushbulletGetUserDevices	: URLUtils.url('Pushbullet-GetUserDevices').toString(),
+		pushbulletSendNotification  : URLUtils.url('Pushbullet-SendNotification').toString()
+	};
+</isscript>
+(function(app){
+	window.Urls = <isprint value="${JSON.stringify(urls)}" encoding="off"/>;
+}(window.app = window.app || {}));
