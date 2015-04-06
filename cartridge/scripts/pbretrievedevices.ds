@@ -25,18 +25,12 @@ importPackage(dw.util);
 function execute( args : PipelineDictionary ) : Number
 {
 
-   	var service : Service;
-	var result : Result;
 	var pbaccessToken : String = args.accessToken;
+	var result : Result;
 
-	var paramObject : Object = {
-		"accessToken" : pbaccessToken
-	}
-	service = ServiceRegistry.get("service.http.pushbullet");
-
-	var libpushbullet = require("./libpushbullet.ds");
-	result = libpushbullet.makeServiceCall(service, paramObject, "devices");
-	var parsedJson : Object = libpushbullet.handleJsonResponse(result);
+	var pushbullet : Object = require('./libpushbullet.ds').getInstance();
+	result = pushbullet.retrieveDevices(pbaccessToken);	
+	var parsedJson : Object = pushbullet.handleJsonResponse(result);
 	args.jsonResponse = parsedJson;	
 	
    return PIPELET_NEXT;

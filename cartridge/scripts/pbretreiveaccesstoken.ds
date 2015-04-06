@@ -23,25 +23,13 @@ importPackage(dw.io)
 
 function execute( args : PipelineDictionary ) : Number
 {
-	var service : Service;
+
 	var result : Result;
 	var code : String = args.CurrentHttpParameterMap.get('code').getStringValue();
-	var grantType : String = "authorization_code";
-	var clientId : String = "G6hx52Xta93eiibcti9ehYXm4ybTWaOj";
-	var clientSecret : String = "LCRx6qItBq3svi5JtSUI14OYwcmKjO1K";
-	
-	var paramObject : Object = {
-		"grant_type" : grantType,
-		"client_id" : clientId,
-		"client_secret" : clientSecret,
-		"code" : code
-	}
-	
-	service = ServiceRegistry.get("service.http.pushbullet.oauth");
-	result = service.call(paramObject);
-	
-	var jsonString = result.object;
-	var parsedJson = JSON.parse(jsonString);
+
+	var pushbullet : Object = require('./libpushbullet.ds').getInstance();
+	result = pushbullet.getAccessToken(code);	
+	var parsedJson : Object = pushbullet.handleJsonResponse(result);
 	args.accessToken = parsedJson['access_token'];
 
     return PIPELET_NEXT;

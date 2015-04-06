@@ -32,6 +32,7 @@ ServiceRegistry.configure("service.http.pushbullet", {
 
 		if (args) {
 			
+			//TODO : Need some serious improvement
 			var argumentsArray : Array = Array.slice(arguments);
 			var actionIndex  = argumentsArray.indexOf("notification");
 			

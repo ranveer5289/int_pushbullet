@@ -25,7 +25,6 @@ importPackage(dw.util);
 
 function execute(args : PipelineDictionary) : Number {
 
-	var service : Service;
 	var result : Result;
 
 	var deviceId : String = args.CurrentHttpParameterMap.get('deviceId').getStringValue();
@@ -33,20 +32,10 @@ function execute(args : PipelineDictionary) : Number {
 	var title : String = args.CurrentHttpParameterMap.get('title').getStringValue();
 	var token : String = args.accessToken;
 
-	var paramObject : Object = {
-		"accessToken" : token,
-		"device_iden" : deviceId,
-		"type" : "link",
-		"title" : title,
-		"body" : "Look At This",
-		"url" : linkToSend
-	}
-
-	service = ServiceRegistry.get("service.http.pushbullet");
 	
-	var libpushbullet = require("./libpushbullet.ds");
-	result = libpushbullet.makeServiceCall(service, paramObject, "pushes", "notification");
-	var parsedJson : Object = libpushbullet.handleJsonResponse(result);
+	var pushbullet : Object = require('./libpushbullet.ds').getInstance();
+	result = pushbullet.sendNotification(token, deviceId, title, linkToSend);
+	var parsedJson : Object = pushbullet.handleJsonResponse(result);
 	args.jsonResponse = parsedJson;
 	return PIPELET_NEXT;
 }

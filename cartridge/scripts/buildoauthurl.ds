@@ -21,26 +21,8 @@ importPackage(dw.util);
 
 function execute(args : PipelineDictionary) : Number{
 
-	var pbAuthorizeUrl : String = "https://www.pushbullet.com/authorize";
-	var clientId : String = "G6hx52Xta93eiibcti9ehYXm4ybTWaOj";
-	var redirectUri : String = "https://dev23.us.loreal.demandware.net/on/demandware.store/Sites-SiteGenesis-Site/default/Pushbullet-GetAccessToken";
-	var responseType : String = "code";
-	var scope : String = "everything";
-
-	var pbParamObject : Object = {
-		"client_id" : clientId,
-		"redirect_uri" : redirectUri,
-		"response_type" : responseType,
-		"scope" : scope
-	}
-
-	var paramString = Object.keys(pbParamObject)
-		.map(function (key) {
-			return key + "=" + encodeURIComponent(pbParamObject[key]);
-		})
-		.join('&');
-
-	var url : String = pbAuthorizeUrl.concat('?', paramString);
+	var pushbullet : Object = require('./libpushbullet.ds').getInstance();
+	var url = pushbullet.getOauthUrl();
 	args.finalUrl = url;
 	return PIPELET_NEXT;
 }
