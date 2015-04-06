@@ -43,7 +43,7 @@ Pushbullet.prototype.getOauthUrl = function () : String {
 
 	var paramString = Object.keys(paramObject)
 		.map(function (key) {
-			return key + "=" + encodeURIComponent(pbParamObject[key]);
+			return key + "=" + encodeURIComponent(paramObject[key]);
 		})
 		.join('&');
 
