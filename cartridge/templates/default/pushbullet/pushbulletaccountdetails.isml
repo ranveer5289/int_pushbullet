@@ -1,0 +1,20 @@
+<!--- TEMPLATENAME: pushbulletaccountdetails.isml --->
+<iscontent type="text/html" charset="UTF-8" compact="true"/>
+<isset name="bctext2" value="Pushbullet Details" scope="pdict"/>
+<isset name="DecoratorTemplate" value="account/pt_account" scope="page"/>
+<isset name="customer" value="${pdict.CurrentCustomer}" scope="page" />
+<isscript>var ojson = pdict.jsonResponse;</isscript>
+
+<isdecorate template="${DecoratorTemplate}">
+	<h2 class="section-header">Pushbullet Device List</h2>
+	<isslot id="account-banner" description="Banner for My Account pages" context="global" />
+	<div class="pushbulletDeviceList">
+		<isloop items="${ojson.devices}" var="device">
+			<isif condition="${device.active}">		
+				<input type="radio" id="pushbulletDevice" name="pbdevices" value="${device.iden}" <isif condition="${!empty(customer.profile.custom.pbDefaultDevice) && (customer.profile.custom.pbDefaultDevice == device.iden)}">checked="checked"</isif> >${device.nickname}<br>
+			</isif>		
+		</isloop>
+		<input id="pushbulletSaveDefaultDevice" type="button" value="Make Default" />
+		<div class="status"></div>
+	</div>
+</isdecorate>

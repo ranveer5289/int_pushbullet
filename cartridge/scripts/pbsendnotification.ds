@@ -33,7 +33,7 @@ function execute(args : PipelineDictionary) : Number {
 
 	var token : String = args.accessToken;
 	var titletoSend = args.title;
-	var bodyToSend  = args.body;
+	var bodyToSend  = args.body || "Look At This";
 	
 	var paramObject : Object = {
 		"accessToken" : token,

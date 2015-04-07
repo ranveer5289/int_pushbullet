@@ -293,7 +293,7 @@
     <segment>
       <node>
         <text-node>
-          <description>Send notification to one of the configured device</description>
+          <description>Makes Selected Device as Users Default Device</description>
         </text-node>
         <node-display x="6" y="5"/>
       </node>
@@ -339,6 +339,108 @@
     <segment>
       <node>
         <join-node/>
+        <node-display x="0" y="1"/>
+      </node>
+      <simple-transition/>
+      <node>
+        <decision-node condition-key="CurrentHttpParameterMap.source.stringValue=='ajax'" condition-operator="expr"/>
+        <node-display x="0" y="1"/>
+        <branch basename="b2" source-connector="yes">
+          <transition target-connector="in">
+            <transition-display>
+              <bend-point relative-to="target" x="0" y="-1"/>
+            </transition-display>
+          </transition>
+          <segment>
+            <node>
+              <interaction-node transaction-required="false">
+                <template buffered="true" dynamic="false" name="pushbullet/pushbulletjson"/>
+              </interaction-node>
+              <node-display x="0" y="2"/>
+            </node>
+          </segment>
+        </branch>
+      </node>
+      <simple-transition>
+        <transition-display>
+          <bend-point relative-to="source" x="2" y="0"/>
+          <bend-point relative-to="target" x="0" y="-1"/>
+        </transition-display>
+      </simple-transition>
+      <node>
+        <interaction-node transaction-required="false">
+          <template buffered="true" dynamic="false" name="pushbullet/pushbulletaccountdetails"/>
+        </interaction-node>
+        <node-display x="1" y="1"/>
+      </node>
+    </segment>
+  </branch>
+  <branch basename="SaveDefaultDevice">
+    <segment>
+      <node>
+        <start-node name="SaveDefaultDevice" secure="false"/>
+        <node-display x="6" y="6"/>
+      </node>
+      <simple-transition>
+        <transition-display>
+          <bend-point relative-to="source" x="0" y="1"/>
+        </transition-display>
+      </simple-transition>
+      <node>
+        <pipelet-node pipelet-name="Assign" pipelet-set-identifier="bc_api">
+          <config-property key="Transactional" value="true"/>
+          <key-binding alias="CurrentHttpParameterMap.get('deviceId').getStringValue()" key="From_0"/>
+          <key-binding alias="CurrentCustomer.profile.custom.pbDefaultDevice" key="To_0"/>
+          <key-binding alias="null" key="From_1"/>
+          <key-binding alias="null" key="To_1"/>
+          <key-binding alias="null" key="From_2"/>
+          <key-binding alias="null" key="To_2"/>
+          <key-binding alias="null" key="From_3"/>
+          <key-binding alias="null" key="To_3"/>
+          <key-binding alias="null" key="From_4"/>
+          <key-binding alias="null" key="To_4"/>
+          <key-binding alias="null" key="From_5"/>
+          <key-binding alias="null" key="To_5"/>
+          <key-binding alias="null" key="From_6"/>
+          <key-binding alias="null" key="To_6"/>
+          <key-binding alias="null" key="From_7"/>
+          <key-binding alias="null" key="To_7"/>
+          <key-binding alias="null" key="From_8"/>
+          <key-binding alias="null" key="To_8"/>
+          <key-binding alias="null" key="From_9"/>
+          <key-binding alias="null" key="To_9"/>
+        </pipelet-node>
+        <node-display x="0" y="1"/>
+      </node>
+      <simple-transition>
+        <transition-display>
+          <bend-point relative-to="source" x="0" y="1"/>
+        </transition-display>
+      </simple-transition>
+      <node>
+        <pipelet-node pipelet-name="Assign" pipelet-set-identifier="bc_api">
+          <config-property key="Transactional" value="false"/>
+          <key-binding alias="{'status':'ok'}" key="From_0"/>
+          <key-binding alias="jsonResponse" key="To_0"/>
+          <key-binding alias="null" key="From_1"/>
+          <key-binding alias="null" key="To_1"/>
+          <key-binding alias="null" key="From_2"/>
+          <key-binding alias="null" key="To_2"/>
+          <key-binding alias="null" key="From_3"/>
+          <key-binding alias="null" key="To_3"/>
+          <key-binding alias="null" key="From_4"/>
+          <key-binding alias="null" key="To_4"/>
+          <key-binding alias="null" key="From_5"/>
+          <key-binding alias="null" key="To_5"/>
+          <key-binding alias="null" key="From_6"/>
+          <key-binding alias="null" key="To_6"/>
+          <key-binding alias="null" key="From_7"/>
+          <key-binding alias="null" key="To_7"/>
+          <key-binding alias="null" key="From_8"/>
+          <key-binding alias="null" key="To_8"/>
+          <key-binding alias="null" key="From_9"/>
+          <key-binding alias="null" key="To_9"/>
+        </pipelet-node>
         <node-display x="0" y="1"/>
       </node>
       <simple-transition>
@@ -389,7 +491,7 @@
                 <key-binding alias="linkToSend" key="To_1"/>
                 <key-binding alias="CurrentHttpParameterMap.get(&quot;title&quot;).getStringValue() || title" key="From_2"/>
                 <key-binding alias="title" key="To_2"/>
-                <key-binding alias="CurrentHttpParameterMap.get(&quot;body&quot;).getStringValue(&quot;Look At This&quot;) || body" key="From_3"/>
+                <key-binding alias="CurrentHttpParameterMap.get(&quot;body&quot;).getStringValue() || body" key="From_3"/>
                 <key-binding alias="body" key="To_3"/>
                 <key-binding alias="null" key="From_4"/>
                 <key-binding alias="null" key="To_4"/>
@@ -418,7 +520,7 @@
           <key-binding alias="pushType" key="To_0"/>
           <key-binding alias="CurrentHttpParameterMap.get(&quot;title&quot;).getStringValue() || title" key="From_2"/>
           <key-binding alias="title" key="To_2"/>
-          <key-binding alias="CurrentHttpParameterMap.get(&quot;body&quot;).getStringValue(&quot;Look At This&quot;) || body" key="From_3"/>
+          <key-binding alias="CurrentHttpParameterMap.get(&quot;body&quot;).getStringValue() || body" key="From_3"/>
           <key-binding alias="body" key="To_3"/>
           <key-binding alias="null" key="From_4"/>
           <key-binding alias="null" key="To_4"/>
@@ -543,10 +645,24 @@
       </node>
       <simple-transition/>
       <node>
-        <interaction-node transaction-required="false">
-          <template buffered="true" dynamic="false" name="pushbullet/pushbulletjson"/>
-        </interaction-node>
+        <decision-node condition-key="CurrentHttpParameterMap.source.stringValue=='ajax'" condition-operator="expr"/>
         <node-display x="0" y="1"/>
+        <branch basename="b2" source-connector="yes">
+          <transition target-connector="in"/>
+          <segment>
+            <node>
+              <interaction-node transaction-required="false">
+                <template buffered="true" dynamic="false" name="pushbullet/pushbulletjson"/>
+              </interaction-node>
+              <node-display x="0" y="1"/>
+            </node>
+          </segment>
+        </branch>
+      </node>
+      <simple-transition/>
+      <node>
+        <end-node/>
+        <node-display x="1" y="1"/>
       </node>
     </segment>
   </branch>

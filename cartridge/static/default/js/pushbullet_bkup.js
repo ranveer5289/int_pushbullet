@@ -13,12 +13,20 @@ var sendToDevice = {
 		$('#pushbulletSubmit').on('click', function () {
 			sendToDevice.sendPushbulletData();
 		});
+
+		$('#pushbulletSaveDefaultDevice').on('click', function () {
+			sendToDevice.saveDefaultDevice();
+		});
 	},
 
 	populatePushbulletDetails : function () {
 		var url = Urls.pushbulletGetUserDevices;
+		var dataObject = {
+			"source" : "ajax"
+		}
 		ajax.getJson({
 			url : url,
+			data : dataObject,
 			callback : function (data) {
 				if (typeof(data.error) == "undefined")
 					sendToDevice.setpushbulletFields(data);
@@ -30,21 +38,21 @@ var sendToDevice = {
 	},
 
 	sendPushbulletData : function () {
-		
+
 		var linkToSend = $('#pushbulletLink').val();
 		var title = $('title').text();
-
 		var dataObject = {
 			"linkToSend" : linkToSend,
+			"source" : "ajax",
 			"title" : title
 		}
-		
-		if($('input:radio[id="pushbulletContact"]:checked').length){
+
+		if ($('input:radio[id="pushbulletContact"]:checked').length) {
 			dataObject.email = $('input:radio[id="pushbulletContact"]:checked').attr('value');
-			
-		}else{
+
+		} else {
 			dataObject.deviceId = $('input:radio[id="pushbulletDevice"]:checked').attr('value');
-			
+
 		}
 
 		var url = Urls.pushbulletSendNotification;
@@ -62,7 +70,7 @@ var sendToDevice = {
 	},
 
 	setpushbulletFields : function (data) {
-		var devices = data.devices; 
+		var devices = data.devices;
 		var contacts = data.contacts;
 		var pbClass = ".pushbulletDeviceList";
 		devices.forEach(function (device) {
@@ -75,11 +83,30 @@ var sendToDevice = {
 		contacts.forEach(function (contact) {
 
 			if (contact.active) {
-				var radiobutton = '<input type="radio" id =pushbulletContact name="pbdevices" value=' + contact.email + '>' + contact.name + " (Contact)" +  '<br>';
+				var radiobutton = '<input type="radio" id =pushbulletContact name="pbdevices" value=' + contact.email + '>' + contact.name + " (Contact)" + '<br>';
 				$(pbClass).prepend(radiobutton);
 			}
 		});
 		$('#pushbulletLink, #pushbulletSubmit').css('display', 'block')
+	},
+
+	saveDefaultDevice : function () {
+		var dataObject = {};
+		dataObject.deviceId = $('input:radio[id="pushbulletDevice"]:checked').attr('value')
+
+		var url = Urls.pushbulletSaveDefaultDevice;
+		ajax.getJson({
+			url : url,
+			data : dataObject,
+			callback : function (data) {
+					if(data.status=="ok"){
+						$('.pushbulletDeviceList .status').html("").append("Successfull..!!!");
+					}else{
+						$('.pushbulletDeviceList .status').html("").append("Error.. try again");
+					}
+						 
+			}
+		});
 	}
 
 };
