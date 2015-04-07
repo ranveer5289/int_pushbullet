@@ -11,8 +11,12 @@
  *   <paramComment> is an optional comment
  *
  * For example:
- *
- * @input  CurrentHttpParameterMap : dw.web.HttpParameterMap
+ * @input  link : String
+ * @input  title : String
+ * @input  body : String
+ * @input  pushType : String
+ * @input  deviceId : String 
+ * @input  email : String  
  * @input  accessToken : String
  * @output jsonResponse : Object
  *
@@ -27,14 +31,36 @@ function execute(args : PipelineDictionary) : Number {
 
 	var result : Result;
 
-	var deviceId : String = args.CurrentHttpParameterMap.get('deviceId').getStringValue();
-	var linkToSend : String = args.CurrentHttpParameterMap.get('linkToSend').getStringValue();
-	var title : String = args.CurrentHttpParameterMap.get('title').getStringValue();
 	var token : String = args.accessToken;
-
+	var titletoSend = args.title;
+	var bodyToSend  = args.body;
+	
+	var paramObject : Object = {
+		"accessToken" : token,
+		"title" 	  : titletoSend,
+		"body" 		  : bodyToSend
+	}
+	
+	
+	//Distinguish between pushttype Link & Note
+	if(!empty(args.link) && args.pushType.equalsIgnoreCase("link")){
+		paramObject.type = args.pushType;
+		paramObject.url = args.link;
+	}else{
+		paramObject.type = args.pushType;
+	}
+	
+	//Distinguish between contact & device
+	if(args.email){
+		//If email exists it is a contact
+		paramObject.email = args.email;	
+	}else{
+		paramObject.device_iden =!empty(args.deviceId)? args.deviceId : "";
+		
+	}
 	
 	var pushbullet : Object = require('./libpushbullet.ds').getInstance();
-	result = pushbullet.sendNotification(token, deviceId, title, linkToSend);
+	result = pushbullet.sendNotification(paramObject);
 	var parsedJson : Object = pushbullet.handleJsonResponse(result);
 	args.jsonResponse = parsedJson;
 	return PIPELET_NEXT;

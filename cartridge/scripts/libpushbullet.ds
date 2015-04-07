@@ -80,17 +80,21 @@ Pushbullet.prototype.retrieveDevices = function (accessToken : String) : Result 
 	return result;
 };
 
-Pushbullet.prototype.sendNotification = function (accessToken : String, deviceId : String, title : String, link : String) : Result {
+Pushbullet.prototype.retrieveContacts = function (accessToken : String) : Result {
 
+	var service : Service;
 	var result : Result;
 	var paramObject : Object = {
-		"accessToken" : accessToken,
-		"device_iden" : deviceId,
-		"type" : "link",
-		"title" : title,
-		"body" : "Look At This",
-		"url" : link
+		"accessToken" : accessToken
 	}
+	service = this.getService();
+	result  = this.makeServiceCall(service, paramObject, "contacts");
+	return result;
+};
+
+Pushbullet.prototype.sendNotification = function (paramObject : Object) : Result {
+
+	var result : Result;
 	service = this.getService();
 	result = this.makeServiceCall(service, paramObject, "pushes", "notification");
 	return result;
@@ -116,6 +120,25 @@ Pushbullet.prototype.makeServiceCall = function (serviceObj : dw.svc.Service, pa
 	return result;
 };
 
+
+Pushbullet.prototype.extend = function (target : Object, source) : Object {
+	var _source : Object;
+	
+	if (!target) return source;
+	
+	for (var i = 1; i < arguments.length; i++) {
+		_source = arguments[i];
+		for (var prop in _source) {
+			if ('object' === typeof _source[prop]) {
+				target[prop] = this.extend(target[prop], _source[prop]);
+			} else {
+				target[prop] = _source[prop];
+			}
+		}
+	}
+	
+	return target;
+};
 Pushbullet.prototype.handleJsonResponse = function (result : dw.svc.Result) : Object {
 	var jsonString : String = "";
 	if (result.ok) {
