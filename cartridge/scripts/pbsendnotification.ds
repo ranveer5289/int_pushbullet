@@ -11,13 +11,7 @@
  *   <paramComment> is an optional comment
  *
  * For example:
- * @input  link : String
- * @input  title : String
- * @input  body : String
- * @input  pushType : String
- * @input  deviceId : String 
- * @input  email : String  
- * @input  accessToken : String
+ * @input  paramObject : Object
  * @output jsonResponse : Object
  *
  */
@@ -30,38 +24,16 @@ importPackage(dw.util);
 function execute(args : PipelineDictionary) : Number {
 
 	var result : Result;
+	var parsedJson : Object;
 
-	var token : String = args.accessToken;
-	var titletoSend = args.title;
-	var bodyToSend  = args.body || "Look At This";
-	
-	var paramObject : Object = {
-		"accessToken" : token,
-		"title" 	  : titletoSend,
-		"body" 		  : bodyToSend
-	}
-	
-	
-	//Distinguish between pushttype Link & Note
-	if(!empty(args.link) && args.pushType.equalsIgnoreCase("link")){
-		paramObject.type = args.pushType;
-		paramObject.url = args.link;
-	}else{
-		paramObject.type = args.pushType;
-	}
-	
-	//Distinguish between contact & device
-	if(args.email){
-		//If email exists it is a contact
-		paramObject.email = args.email;	
-	}else{
-		paramObject.device_iden =!empty(args.deviceId)? args.deviceId : "";
-		
-	}
-	
 	var pushbullet : Object = require('./libpushbullet.ds').getInstance();
-	result = pushbullet.sendNotification(paramObject);
-	var parsedJson : Object = pushbullet.handleJsonResponse(result);
+	try {
+		result = pushbullet.sendNotification(args.paramObject);
+	    parsedJson = pushbullet.handleJsonResponse(result);
+	} catch (e) {
+		Logger.error("pbsendnotification.ds " + e.message);
+		return PIPELET_NEXT;
+	}
 	args.jsonResponse = parsedJson;
 	return PIPELET_NEXT;
 }
